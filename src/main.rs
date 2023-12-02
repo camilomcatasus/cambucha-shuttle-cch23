@@ -29,8 +29,7 @@ async fn limit_test(req: HttpRequest) -> HttpResponse {
         .path()
         .strip_prefix("/1/")
         .unwrap()
-        .strip_suffix("/")
-        .unwrap()
+        .trim_end_matches("/")
         .split("/")
         .collect();
 
