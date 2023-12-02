@@ -1,7 +1,7 @@
 use actix_web::{
     get,
     web::{Path, ServiceConfig},
-    HttpResponse,
+    HttpRequest, HttpResponse,
 };
 use shuttle_actix_web::ShuttleActixWeb;
 
@@ -23,13 +23,29 @@ async fn logic_test(path: Path<(usize, usize)>) -> HttpResponse {
     return HttpResponse::Ok().body(format!("{}", pow_result));
 }
 
-macros::gen_day_one_routes!();
+#[get("/1/{tail:.*}")]
+async fn limit_test(req: HttpRequest) -> HttpResponse {
+    let split_path: Vec<&str> = req.path().strip_prefix("/1/").unwrap().split("/").collect();
+
+    println!("{:#?}", split_path);
+    let mut num: usize = 0;
+    for elem in split_path {
+        let parsed_elem: usize = elem.parse().unwrap();
+        num = num ^ parsed_elem;
+        println!("Num: {}", num);
+    }
+    let pow_result = usize::pow(num, 3);
+    return HttpResponse::Ok().body(format!("{}", pow_result));
+}
+
+//macros::gen_day_one_routes!();
 
 #[shuttle_runtime::main]
 async fn main() -> ShuttleActixWeb<impl FnOnce(&mut ServiceConfig) + Send + Clone + 'static> {
     let config = move |cfg: &mut ServiceConfig| {
-        cfg.service(index).service(fake_error).service(logic_test);
+        cfg.service(index).service(fake_error).service(limit_test);
     };
 
     Ok(config.into())
 }
+
