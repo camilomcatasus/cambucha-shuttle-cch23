@@ -34,7 +34,6 @@ async fn limit_test(req: HttpRequest) -> HttpResponse {
         .split("/")
         .collect();
 
-    println!("{:#?}", split_path);
     let mut num: usize = 0;
     for elem in split_path {
         let parsed_elem: usize = elem.parse().unwrap();
