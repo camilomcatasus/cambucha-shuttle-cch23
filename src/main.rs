@@ -25,14 +25,20 @@ async fn logic_test(path: Path<(usize, usize)>) -> HttpResponse {
 
 #[get("/1/{tail:.*}")]
 async fn limit_test(req: HttpRequest) -> HttpResponse {
-    let split_path: Vec<&str> = req.path().strip_prefix("/1/").unwrap().split("/").collect();
+    let split_path: Vec<&str> = req
+        .path()
+        .strip_prefix("/1/")
+        .unwrap()
+        .strip_suffix("/")
+        .unwrap()
+        .split("/")
+        .collect();
 
     println!("{:#?}", split_path);
     let mut num: usize = 0;
     for elem in split_path {
         let parsed_elem: usize = elem.parse().unwrap();
         num = num ^ parsed_elem;
-        println!("Num: {}", num);
     }
     let pow_result = usize::pow(num, 3);
     return HttpResponse::Ok().body(format!("{}", pow_result));
