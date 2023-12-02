@@ -33,12 +33,12 @@ async fn limit_test(req: HttpRequest) -> HttpResponse {
         .split("/")
         .collect();
 
-    let mut num: usize = 0;
+    let mut num: i32 = 0;
     for elem in split_path {
-        let parsed_elem: usize = elem.parse().unwrap();
+        let parsed_elem: i32 = elem.parse().unwrap();
         num = num ^ parsed_elem;
     }
-    let pow_result = usize::pow(num, 3);
+    let pow_result = i32::pow(num, 3);
     return HttpResponse::Ok().body(format!("{}", pow_result));
 }
 
