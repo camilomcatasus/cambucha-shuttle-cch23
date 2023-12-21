@@ -1,3 +1,5 @@
+mod two;
+
 use actix_web::{
     get,
     web::{Path, ServiceConfig},
@@ -47,7 +49,11 @@ async fn limit_test(req: HttpRequest) -> HttpResponse {
 #[shuttle_runtime::main]
 async fn main() -> ShuttleActixWeb<impl FnOnce(&mut ServiceConfig) + Send + Clone + 'static> {
     let config = move |cfg: &mut ServiceConfig| {
-        cfg.service(index).service(fake_error).service(limit_test);
+        cfg.service(index)
+            .service(fake_error)
+            .service(limit_test)
+            .service(two::four)
+            .service(two::four2);
     };
 
     Ok(config.into())
